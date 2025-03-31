@@ -8,7 +8,7 @@ app = FastAPI()
 
 @app.get("/")
 async def read_index():
-    return FileResponse("static/index.html")
+    return FileResponse("app/static/index.html")
 
 
 @app.get("/api/hello")

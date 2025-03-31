@@ -21,6 +21,7 @@
                 align-items: center;
                 justify-content: center;
                 padding: 24px;
+                text-align: center;
             }
 
             h1 {
@@ -28,6 +29,25 @@
                 font-weight: bold;
                 color: #1e293b;
                 min-height: 4.5rem; /* Prevent layout shift when text changes */
+                margin-bottom: 0.5rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+                color: #64748b;
+                margin-top: 1rem;
+                font-weight: 500;
+            }
+
+            .subtitle a {
+                color: #0f766e;
+                text-decoration: none;
+                transition: color 0.2s ease;
+            }
+
+            .subtitle a:hover {
+                color: #0e7490;
+                text-decoration: underline;
             }
 
             .cursor {
@@ -54,6 +74,10 @@
                     <span id="text"></span>
                     <span class="cursor">|</span>
                 </h1>
+                <p class="subtitle">
+                    Deployed from
+                    <a href="https://infra.new" target="_blank">infra.new</a>
+                </p>
             </div>
         </main>
 
