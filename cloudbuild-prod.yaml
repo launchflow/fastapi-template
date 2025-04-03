@@ -1,0 +1,40 @@
+
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/fastapi-app:$COMMIT_SHA', '.']
+
+  # Push the container image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/fastapi-app:$COMMIT_SHA']
+
+  # Tag as stable for production
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['tag', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/fastapi-app:$COMMIT_SHA', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/fastapi-app:stable']
+
+  # Push stable tag
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/fastapi-app:stable']
+
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'fastapi-app-prod'
+      - '--image'
+      - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/fastapi-app:stable'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+
+substitutions:
+  _REGION: us-west1
+  _REPOSITORY: fastapi-app-prod
+
+images:
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/fastapi-app:$COMMIT_SHA'
+  - '${_REGION}-docker.pkg.dev/${PROJECT_ID}/${_REPOSITORY}/fastapi-app:stable'
